@@ -64,5 +64,6 @@ export class MeasureService {
         measure.has_confirmed = true;
 
         await measureRepo.save(measure);
+        
     }
 }
