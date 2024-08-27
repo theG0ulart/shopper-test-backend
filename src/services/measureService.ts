@@ -1,15 +1,15 @@
 import fetch from 'node-fetch';
 import { Measure } from '../entities/Measure';
 import { AppDataSource } from '../config/database';
-import { ConfirmMeasureData, MeasureResponse, UploadMeasureData } from '../types/MeasureTypes';
-import { Between } from 'typeorm';
+import { ConfirmMeasureData, GeminiApiResponse, ListMeasureResponse, MeasureResponse, UploadMeasureData } from '../types/MeasureTypes';
+import { Between, FindOptionsWhere } from 'typeorm';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 export class MeasureService {
     static async uploadImage(data: UploadMeasureData): Promise<MeasureResponse> {
         const measureRepo = AppDataSource.getRepository(Measure);
         
-        const existingMeasure = await Measure.findOne({
+        const existingMeasure = await measureRepo.findOne({
             where: {
                 customer_code: data.customer_code,
                 measure_type: data.measure_type,
@@ -30,7 +30,7 @@ export class MeasureService {
             body: JSON.stringify({image: data.image}),
         });
 
-        const geminiData = await response.json();
+        const geminiData = await response.json() as GeminiApiResponse;
 
         const measure = new Measure();
         measure.customer_code = data.customer_code;
@@ -66,4 +66,39 @@ export class MeasureService {
         await measureRepo.save(measure);
         
     }
+
+    static async listMeasures(customer_code: string, measure_type?: string): Promise<ListMeasureResponse[]>{
+        const measureRepo = AppDataSource.getRepository(Measure);
+
+        // Validação do Tipo
+        if (measure_type && !['WATER', 'GAS'].includes(measure_type.toUpperCase())) {
+            throw new Error('INVALID_TYPE');
+          }
+
+          // Where Opcional
+          const whereClause: FindOptionsWhere<Measure> = {
+            customer_code,
+            ...(measure_type ? { measure_type: measure_type.toUpperCase() as 'WATER' | 'GAS' } : {})
+          }
+
+          // Busca no Repo
+          const measures = await measureRepo.find({
+            where: whereClause,
+          });
+
+        // Verifica se encontrou medidas
+        if(measures.length === 0){
+            throw new Error('MEASURES_NOT_FOUND');
+        }
+
+
+        // Mapemento dos resultados
+        return measures.map((measure: Measure) => ({
+            measure_uuid: measure.uuid,
+            measure_datetime: measure.measure_datetime,
+            measure_type: measure.measure_type,
+            has_confirmed: measure.has_confirmed,
+            image_url: measure.image_url
+        }))
+    }   
 }

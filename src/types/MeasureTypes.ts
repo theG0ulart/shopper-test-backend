@@ -4,6 +4,11 @@ export interface UploadMeasureData {
     measure_datetime: string;
     measure_type: 'WATER' | 'GAS';
   }
+
+  export interface GeminiApiResponse {
+    image_url: string;
+    measure_value: number;
+  }
   
   export interface ConfirmMeasureData {
     measure_uuid: string;
