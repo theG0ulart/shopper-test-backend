@@ -2,7 +2,7 @@
 FROM node:18
 
 # Defina o diretório de trabalho dentro do contêiner
-WORKDIR /src
+WORKDIR /app
 
 # Copie o package.json e o package-lock.json para o contêiner
 COPY package*.json ./
@@ -12,6 +12,10 @@ RUN npm install
 
 # Copie o restante do código da aplicação para o contêiner
 COPY . .
+
+# Variavel de Ambiente
+
+ENV GEMINI_API_KEY=${GEMINI_API_KEY}
 
 # Compilando o TypeScript
 
