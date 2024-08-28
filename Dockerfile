@@ -13,6 +13,10 @@ RUN npm install
 # Copie o restante do código da aplicação para o contêiner
 COPY . .
 
+# Variavel de Ambiente
+
+ENV GEMINI_API_KEY=${GEMINI_API_KEY}
+
 # Compilando o TypeScript
 
 RUN npm run build

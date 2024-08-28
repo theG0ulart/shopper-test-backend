@@ -1,6 +1,6 @@
 import express from 'express';
 import { MeasureController } from '../controllers/measureController';
-import { uploadValidation, confirmValidation, listValidation } from '../middlewares/ValidationMiddlewares';
+import { uploadValidation, confirmValidation, listValidation } from '../middlewares/validationMiddlewares';
 
 const router = express.Router();
 

@@ -49,7 +49,7 @@ export class MeasureController {
 
   static async list(req: Request, res: Response) {
     try {
-      const measures = await MeasureService.listMeasures(req.params.customer_code, req.query.measure_type as string);
+      const measures = await MeasureService.listMeasures(req.params.customer_code as string, req.query.measure_type as string);
       res.status(200).json({ customer_code: req.params.customer_code, measures });
     } catch (err) {
         const error = err as Error;

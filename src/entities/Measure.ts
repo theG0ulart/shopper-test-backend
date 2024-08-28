@@ -9,7 +9,7 @@ export class Measure extends BaseEntity{
     @Column()
     customer_code!: string;
 
-    @Column('datetime')
+    @Column({type: 'timestamp'})
     measure_datetime!: Date;
 
     @Column()
