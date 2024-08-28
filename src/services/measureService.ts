@@ -1,9 +1,10 @@
-import fetch from 'node-fetch';
 import { Measure } from '../entities/Measure';
 import { AppDataSource } from '../config/database';
 import { ConfirmMeasureData, GeminiApiResponse, ListMeasureResponse, MeasureResponse, UploadMeasureData } from '../types/MeasureTypes';
 import { Between, FindOptionsWhere } from 'typeorm';
 import { startOfMonth, endOfMonth } from 'date-fns';
+
+
 
 export class MeasureService {
     static async uploadImage(data: UploadMeasureData): Promise<MeasureResponse> {
@@ -20,6 +21,8 @@ export class MeasureService {
         if(existingMeasure){
             throw new Error('DOUBLE_REPORT');
         }
+
+        const fetch = (await import('node-fetch')).default;
 
         const response = await fetch('https://gemini.api.url', {
             method: 'POST',
