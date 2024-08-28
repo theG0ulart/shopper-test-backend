@@ -14,6 +14,8 @@ app.use(express.json());
 
 app.use(measureRoutes);
 
+app.use(errorHandler)
+
 
 AppDataSource.initialize()
   .then(() => {
